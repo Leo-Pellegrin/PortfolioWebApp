@@ -1,29 +1,29 @@
 <template>
   <div>
     <div class="ml-4 mt-24 sm:ml-8 md:ml-12 lg:ml-16 relative border-b border-gray-200 dark:border-gray-800 py-8">
-      <div class="mb-3 text-sm/6 font-semibold text-primary flex items-center gap-1.5">
+      <div class="animate-on-scroll mb-3 text-sm/6 font-semibold text-primary flex items-center gap-1.5">
         <span class=" mb-2 text-base/7 font-semibold text-primary'">{{ project.type }}</span>        
       </div>
-      <div class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+      <div class="animate-on-scroll text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
         <span class="text-5xl font-bold flex justify-start text-left tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl lg:text-7xl"> {{ project.title }}</span>
       </div>
       <div class="mt-4 text-lg text-gray-500 dark:text-gray-400">
-        <UBreadcrumb :links="links" class="mt-10" />
+        <UBreadcrumb :links="links" class="animate-on-scroll mt-10" />
         <div class="mt-24 w-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          <div class="text-left">
+          <div class="text-left animate-on-scroll">
             <span class="text-lg/8 text-gray-600 dark:text-gray-300">
               {{ project.description }}
             </span>
           </div>
           <div class="grid grid-cols-2">
-            <div class="px-10 text-left">
+            <div class="px-10 text-left animate-on-scroll">
               <span>
                 <UDivider class="mt-10 bgdivider" size="md" />
                 <p class="font-extrabold mt-5 dark:text-gray-300">Client</p>
                 <p>{{ project.client }}</p>
               </span>
             </div>
-            <div class="px-10 text-left">
+            <div class="px-10 text-left animate-on-scroll">
               <span>
                 <UDivider class="mt-10 bgdivider" size="md" />
                 <p class="font-extrabold mt-5 dark:text-gray-300">Technologies</p>
@@ -31,9 +31,9 @@
               </span>
             </div>
           </div>
-          <div class="grid content-center justify-start mt-2 dark:text-gray-100">            
-            <UButton color="gray" variant="ghost" class="mx-2" :to="project.githubrepo">
-              <div class="flex items-center arrow hover:text-primary-500">
+          <div class="grid content-center justify-start mt-2 dark:text-gray-100 animate-on-scroll">            
+            <UButton color="gray" variant="ghost" class="mx-2 hover:bg-current-500 hover:font-bold dark:hover:text-primary-500" :to="project.githubrepo">
+              <div class="flex items-center arrow">
                 <span class="text-base">Go to the project code</span>                          
                 <UIcon name="i-heroicons-arrow-right-20-solid" class="w-5 h-5 ml-2 " />
               </div>                  
@@ -42,7 +42,7 @@
         </div>
       </div>  
     </div>  
-    <div v-if="images" class="my-10 mx-auto flex justify-center items-center w-3/4 sm:w-4/5">
+    <div v-if="images" class="animate-on-scroll my-10 mx-auto flex justify-center items-center w-3/4 sm:w-4/5">
       <UCarousel ref="carouselRef" :items="images" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden mx-auto" arrows indicators>
         <template #default="{ item }">
           <img :src="item" class="object-fit object-center" @click="openItem(item)">
@@ -100,7 +100,39 @@ const technologies = ref('')
 const images = ref([])
 const carouselRef = ref()
 
+function animateOnScroll() {
+    'use strict'
+
+    const MARGIN = 10 // Définir une marge supplémentaire de 200 pixels
+
+    const detectAndAnimate = () => {
+        const elements = document.querySelectorAll('.animate-on-scroll')
+        elements.forEach(element => {
+            const isVisible = isElementInViewport(element, MARGIN)
+            element.classList.toggle('is-visible', isVisible)
+        })
+    }
+
+    const isElementInViewport = (el: Element, margin: number) => {
+        const rect = el.getBoundingClientRect()
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+        const viewportWidth = window.innerWidth || document.documentElement.clientWidth
+        
+        return (
+            rect.top - margin <= viewportHeight &&
+            rect.left - margin <= viewportWidth &&
+            rect.bottom + margin >= 0 &&
+            rect.right + margin >= 0
+        )
+    }
+
+    window.addEventListener('scroll', detectAndAnimate)
+    detectAndAnimate()
+}
+
 onMounted(async () => {
+  animateOnScroll()
+
   if(window){
     if (window.innerWidth < 500) isMobile.value = true
   }
@@ -148,6 +180,15 @@ function openItem(item){
 
 .bgdivider * {
   border-color: #dba085!important;
+}
+
+.animate-on-scroll {    
+    opacity: 0;    
+    transition: opacity 1s;
+}
+
+.animate-on-scroll.is-visible { 
+    opacity: 1;
 }
 
 .arrow:hover .w-5 {

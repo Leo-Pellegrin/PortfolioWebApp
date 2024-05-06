@@ -7,24 +7,24 @@ const links = computed(() => [
 {
   label: ' / Knowledge',
   to: '/#knowledge',
-  icon: 'i-heroicons-credit-card',
+  icon: 'iconoir:learning',
   active: activeHeadings.value.includes('knowledge') && !activeHeadings.value.includes('home')
 }, {
   label: '/ Projects',
   to: '/#projects',
-  icon: 'i-heroicons-academic-cap',
+  icon: 'ph:projector-screen-chart',
   active: activeHeadings.value.includes('projects') && !activeHeadings.value.includes('experience') && !activeHeadings.value.includes('knowledge')
 }, {
   label: '/ Experience',
   to: '/#experience',
-  icon: 'i-heroicons-question-mark-circle',
-  active: activeHeadings.value.includes('experience') && !activeHeadings.value.includes('contact')
+  icon: 'ph:student',
+  active: activeHeadings.value.includes('experience')
 },
 {
   label: '/ Contact',
   to: '/#contact',
-  icon: 'i-heroicons-arrow-right-20-solid',
-  active: activeHeadings.value.includes('contact') && !projectpage.value
+  icon: 'i-heroicons-phone-20-solid',
+  active: false
 }
 ])
 
@@ -33,7 +33,7 @@ const route = useRoute()
 const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
 
 const projectpage = computed(() => {
-  const project = page.value.projects.find((project) => project.title === route.params.name)
+  const project = page.value?.projects.find((project: { title: string | string[]; }) => project.title === route.params.name)
   if(project) {   
     return true
   }
@@ -66,7 +66,7 @@ function useScrollspy(): { activeHeadings: any; updateHeadings: any; } {
   const activeHeadings = ref([])
   
   const updateHeadings = (headings: HTMLElement[]) => {
-    const active = []
+    const active: string[] = []
     
     headings.forEach((heading) => {
       if(!heading) return
@@ -168,16 +168,16 @@ const handleScroll = () => {
 </script>
 
 <template>
-  <header class="bg-background/75 border-b border-gray-200 dark:border-gray-800 -mb-px top-0 z-50 w-full" :class="{ 'sticky-header': showHeader }">
-    <div class=" grid grid-cols-3 items-center justify-between gap-3 h-[--header-height]">
+  <header class="border-b border-current-200 dark:border-gray-800 -mb-px top-0 z-50 w-full" :class="{ 'sticky-header': showHeader }">
+    <div class=" grid grid-cols-3 items-center justify-between gap-3 h-[--header-height] bg-current-100 dark:bg-blackcolor">
       <div class="flex items-center mx-6 my-4">
         <UBadge variant="subtle" class="mb-0.5 transition-all ease-in-out delay-1000" size="lg" color="primary">
           <span class="text-primary dark:text-primary" @click="toTop()">Léo Pellegrin</span>
         </UBadge>
       </div>
       <div class="flex justify-center lg:flex-1 gap-1.5">
-        <UButton v-for="(link, index) in links" :key="index" variant="ghost" class="border-none hover:bg-gray-800 mx-5 xs:hidden sm:hidden md:hidden lg:flex xl:flex transition-all ease-in-out delay-300" @click="scrollToSection(link.to)">
-          <span class="" :class="link.active ? 'underline underline-offset-8 text-white' : 'text-gray-400'">{{ link.label }}</span>
+        <UButton v-for="(link, index) in links" :key="index" variant="ghost" class="hoverbtn border-none hover:bg-current-500 dark:hover:bg-gray-800 mx-5 xs:hidden sm:hidden md:hidden lg:flex xl:flex transition-all ease-in-out delay-300" @click="scrollToSection(link.to)">
+          <span class="" :class="link.active ? ' underline underline-offset-8 dark:text-white text-blackcolor font-bold' : 'text-gray-500 dark:text-gray-400'">{{ link.label }}</span>
         </UButton>
       </div>
 
@@ -187,14 +187,16 @@ const handleScroll = () => {
         </div>        
       </div>
     </div>
-    <div v-if="showAsideLink" v-auto-animate class="lg:block my-2">
+    <div v-if="showAsideLink" v-auto-animate class="lg:block dark:my-2 bg-current-100 dark:bg-blackcolor">
       <UDivider class="w-full" />
       <div>
         <template v-for="(link, index) in links" :key="index">
-          <a class="group flex w-full rounded-md font-medium text-sm truncate hover:bg-gray-900 ml-8 my-5 xs:block sm:block md:block lg:hidden xl:hidden" @click="scrollToSection(link.to)">
-            <UIcon :name="link.icon" class="w-5 h-5 mr-3 text-gray-300 group-hover:text-gray-100" />
-            <span>{{ link.label }}</span>
-          </a>
+          <ULink class="group p-2 flex w-full rounded-md font-medium text-sm truncate bg-current-100 hover:bg-current-500 dark:bg-blackcolor dark:hover:bg-gray-700 ml-8 my-5 xs:block sm:block md:block lg:hidden xl:hidden" @click="scrollToSection(link.to)">
+            <div class="flex justify-start">
+              <Icon :name="link.icon" class="w-5 h-5 mr-3 text-gray-800 dark:text-gray-300 group-hover:text-gray-100" />
+              <span>{{ link.label }}</span>
+            </div>
+          </ULink>
         </template>
       </div>
     </div>
@@ -202,13 +204,15 @@ const handleScroll = () => {
 </template>
 
 <style scoped>
+.hoverbtn:hover span{
+  color: white;
+  transition: all 0.7s ease-in-out;
+}
+
 .sticky-header {
   position: sticky;
-  top: 0;
   left: 0;
-  width: 100%;
-  z-index: 50;
-  background-color: #121212;
+  background-color: light-dark(#f8ede8,#121212);
   transition: all 1s ease-in-out; /* Transition de l'opacité */
 }
 

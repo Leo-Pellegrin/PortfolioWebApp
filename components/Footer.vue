@@ -1,12 +1,26 @@
 <script setup lang="ts">
+const colorMode = useColorMode()
 
-onMounted(() => {
+const isDarkTheme = ref(true)
+const isMobile = ref(false)
+
+onMounted(() => {  
   if(window){
     if (window.innerWidth < 768) isMobile.value = true
   }
 })
 
-const isMobile = ref(false)
+function changeTheme(theme: string) {
+  if(theme === 'dark'){
+    colorMode.preference = 'dark'
+    isDarkTheme.value = true
+  } else {
+    console.log('light')
+    colorMode.preference = 'light'
+    console.log('light')
+    isDarkTheme.value = false
+  }
+}
 
 // Watcher to update isMobile when window width changes
 watchEffect(() => {
@@ -31,7 +45,7 @@ watchEffect(() => {
 
 <template>
   <UDivider class="w-full mb-5" size="md" />
-  <footer id="contact" class="animate-on-scroll mb-10">
+  <footer id="contact" class="animate-on-scroll mb-10 bg-current-50 dark:bg-blackcolor ">
     <!-- Cols Available -->
     <div class="flex justify-center pr-20 xs:grid xs:mx-auto xs:pr-0 sm:grid md:flex">
       <div class="text-xl text-black dark:text-white font-extrabold text-center">
@@ -84,43 +98,9 @@ watchEffect(() => {
         </div>
       </div>
     </div>
+    <div class="flex justify-center mt-10">
+      <UButton v-if="isDarkTheme" icon="i-heroicons-sun" color="primary" @click="changeTheme('light')"/>         
+      <UButton v-if="!isDarkTheme" icon="i-heroicons-moon" color="primary" @click="changeTheme('dark')"/>    
+    </div>
   </footer>
 </template>
-
-
-  <!-- <UFooter id="contact" class="animate-on-scroll">
-    <template #top>
-      <div>
-        <div class="text-4xl text-primary-300 font-extrabold text-center">
-          <span>Available for freelance opportunities</span>
-          <UDivider class="flex-1 my-3" />
-          <div class="text-xl text-primary-300 font-bold text-center">
-            <span>Have an exciting project you need help with?</span>
-          </div>
-          <div class="text-xl text-primary-600 font-bold text-center">
-            <span>Let's talk!</span>
-          </div>    
-        </div>  
-        <div class="mt-10 text-center">
-          <span class="text-xl font-extrabold">Contact</span>
-        </div>        
-       
-      </div>
-    </template>
-
-    <template #left>
-      <p class="text-gray-500 dark:text-gray-400 text-sm">
-        Copyright © {{ new Date().getFullYear() }}. All rights reserved.
-      </p>
-    </template>
-
-    <template #center>
-      <p class="text-gray-500 dark:text-gray-400 text-sm">
-        Powered by Nuxt & NuxtUI
-      </p>
-    </template>
-
-    <template #right>
-      <UColorModeButton size="sm" />
-    </template>
-  </UFooter> -->

@@ -3,7 +3,11 @@
     <div id="imgtonext">
       <div class="flex items-center mb-3 img">
         <Transition>
-          <NuxtImg v-if="displayimage" :src="mainImageNextProject" sizes="250px" fit="cover" class="rounded-t-xl" />
+          <img
+              v-if="displayimage"
+              :src="mainImageNextProject"
+              class="object-cover	rounded-t-xl h-auto imgtonext"
+            >          
         </Transition>      
       </div>
     </div>
@@ -79,6 +83,7 @@ onMounted(() => {
   bottom: 105px;
   right: 33px;
   opacity: 1;
+  width: 15.5em;
 }
 
 #to-next-project {

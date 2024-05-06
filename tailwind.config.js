@@ -1,14 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-import defaultTheme from 'tailwindcss/defaultTheme'
-
 export default {
-  content: [ 
-    './assets/**/*.{vue,js,css}',
-    './components/**/*.{vue,js}',
+  content: [
+    './components/**/*.{js,vue,ts}',
     './layouts/**/*.vue',
     './pages/**/*.vue',
     './plugins/**/*.{js,ts}',
-    './nuxt.config.{js,ts}',
+    './app.vue',
+    './error.vue',
   ],
   theme: {
     screens: {
@@ -19,15 +17,12 @@ export default {
       'xl': '1280px',
       '2xl': '1536px'
     },
-    extend: {
-      fontFamily: {
-        sans: ['DM Sans', ...defaultTheme.fontFamily.sans]
-      },
+    extend: {     
       gridTemplateColumns: {
         'knowledge-columns': '1fr 2fr',
       },
       colors: {
-        'bgcolor': '#1A191D',
+        'blackcolor': '#121212',
         'current': {
           50: '#fcf7f4',
           100: '#f8ede8',

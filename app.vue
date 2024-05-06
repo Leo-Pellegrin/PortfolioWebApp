@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import '@/assets/css/main.css'
+const colorMode = useColorMode()
 
 useHead({
   meta: [
@@ -20,6 +20,11 @@ useSeoMeta({
   twitterImage: 'https://landing-template.nuxt.dev/social-card.png',
   twitterCard: 'summary_large_image'
 })
+
+onMounted(() => {
+  colorMode.preference = 'dark'
+})
+
 </script>
 
 <template>
@@ -33,6 +38,9 @@ useSeoMeta({
 </template>
 
 <style>  
+  body{
+    background-color: light-dark(#fcf7f4, #121212);
+  }
 
   .page-enter-active,
   .page-leave-active {

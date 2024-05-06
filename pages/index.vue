@@ -2,19 +2,20 @@
 
 const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
 const route = useRoute()
+const colorMode = useColorMode()
 
 useSeoMeta({
-  title: page.value.title,
-  ogTitle: page.value.title,
-  description: page.value.description,
-  ogDescription: page.value.description
+  title: page.value?.title,
+  ogTitle: page.value?.title,
+  description: page.value?.description,
+  ogDescription: page.value?.description
 })
 
-const projects = ref(page.value.projects)
+const projects = ref(page.value?.projects)
 const projectFilter = ref('All')
 
 const projectTypesWithCount = computed(() => {
-  const typesCountMap = page.value.projects.reduce((acc: Record<string, number>, project: { type: string }) => {
+  const typesCountMap = page.value?.projects.reduce((acc: Record<string, number>, project: { type: string }) => {
     const type = project.type
     if (acc['All']) {
       acc['All']++
@@ -37,10 +38,10 @@ const projectTypesWithCount = computed(() => {
 
 function updateProjectsShow(type: string){
   if(type === 'All'){
-    projects.value = page.value.projects
+    projects.value = page.value?.projects
     projectFilter.value = 'All'
   } else {
-    projects.value = page.value.projects.filter((project: { type: string; }) => project.type === type)
+    projects.value = page.value?.projects.filter((project: { type: string; }) => project.type === type)
     projectFilter.value = type
   }
 }
@@ -58,7 +59,7 @@ function animateOnScroll() {
         })
     }
 
-    const isElementInViewport = (el, margin) => {
+    const isElementInViewport = (el: Element, margin: number) => {
         const rect = el.getBoundingClientRect()
         const viewportHeight = window.innerHeight || document.documentElement.clientHeight
         const viewportWidth = window.innerWidth || document.documentElement.clientWidth
@@ -88,20 +89,21 @@ const scrollToKnowledge = () => {
     })
   }
 }
+
 </script>
 
 <template>
-  <div>
-    <div id="home" class="animate-on-scroll w-screen h-screen bg-[url('/public/mainbg.png')] bg-cover bg-center lineargradient py-24 sm:py-32 md:py-40 relative">
+  <div class="bg-current-50 dark:bg-blackcolor">
+    <div id="home" :class="(colorMode.preference == 'dark' || colorMode.preference == 'system') ? 'darklineargradient' : 'lineargradient' " class="animate-on-scroll w-full h-screen bg-[url('/public/mainbg.png')] bg-cover bg-center dark: py-24 sm:py-32 md:py-40 relative">
       <div class="gap-10 sm:gap-y-24 flex flex-col text-center">
         <div class="mt-10">
-          <span class="text-5xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-7xl"> {{ page.hero.title }} </span>
+          <span class="text-5xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-7xl"> {{ page?.hero.title }} </span>
         </div>
-        <span class="text-lg tracking-tight text-gray-600 dark:text-gray-300"> {{ page.hero.description }} </span>
+        <span class="text-lg tracking-tight text-gray-600 dark:text-gray-300"> {{ page?.hero.description }} </span>
         <div class="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3">
           <UButton size="xl" class="mt-16 2xl:mb-28 2xl:mt-40 2xl:text-xl px-8 py-4" @click="scrollToKnowledge()"> 
-            <UIcon :name="page.hero.links[0].icon" class="animate-bounce 2xl:text-2xl" /> <!-- Ajoutez une classe text-4xl pour augmenter la taille de l'icône -->
-            {{ page.hero.links[0].label }}
+            <UIcon :name="page?.hero.links[0].icon" class="animate-bounce 2xl:text-2xl" /> 
+            {{ page?.hero.links[0].label }}
           </UButton>
         </div>
       </div>
@@ -109,21 +111,21 @@ const scrollToKnowledge = () => {
 
 
     <div id="knowledge" class="py-24 sm:py-32 mt-10">
-      <div class="gap-16 sm:gap-y-24 text-center">
+      <div class="gap-16 sm:gap-y-24 text-center z-50">
         <div class="mb-2 text-base/7 font-semibold text-primary"> 
-          {{ page.knowledge.headline }} 
+          {{ page?.knowledge.headline }} 
         </div>
         <h2 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl xl:text-6xl">
-          {{ page.knowledge.title }}
+          {{ page?.knowledge.title }}
         </h2>
-        <div class="mt-6 text-lg/8 text-gray-600 dark:text-gray-300">
+        <div class="mt-6 text-lg/8 text-gray-600 dark:text-gray-300 z-50">
           <div class="animate-on-scroll z-3 w-100 mt-16 mb-16 mx-20 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
             <!-- Votre boucle v-for ici -->
-            <UCard v-for="(category, index) in page.knowledge.categories" :key="index" class="mb-4 !bg-inherit ring-1 ring-primary-200 dark:ring-primary-800">
+            <UCard v-for="(category, index) in page?.knowledge.categories" :key="index" class="mb-4 !bg-inherit ring-1 ring-primary-200 dark:ring-primary-800">
               <template #header>          
                 <div class="flex items-center">
                   <UIcon :name="category.icon" class="text-3xl text-primary-500 dark:text-primary-400" />
-                  <span class="ml-2 text-2xl font-semibold text-gray-900 dark:text-white underline decoration-primary-500 decoration-2 underline-offset-6">{{ category.title }}</span>
+                  <span class="ml-2 text-2xl font-semibold text-dark-900 dark:text-white underline decoration-primary-500 decoration-2 underline-offset-6">{{ category.title }}</span>              
                 </div>            
               </template>
               <div class="grid">
@@ -132,8 +134,8 @@ const scrollToKnowledge = () => {
                   <UDivider orientation="vertical" class="h-24 w-10 bgdividergray" size="sm" />    
                   <span class="text-gray-500">&lt;/div&gt;</span>
                 </div>
-                <div class="col-start-2 text-left my-auto text-lg">
-                  <span class="mt-2 font-extrabold text-gray-500 dark:text-gray-200">
+                <div class="col-start-2 text-left my-auto text-lg xs:ml-4">
+                  <span class="mt-2 font-extrabold text-gray-700 dark:text-gray-200 z-50">
                     {{ category.description }}
                   </span>
                 </div>              
@@ -157,10 +159,13 @@ const scrollToKnowledge = () => {
               </div>                 
             </div>  
           </div>
-        </div>
-        <div class="flex animate-on-scroll justify-center -mt-60 -z-50 xs:-mt-40 sm:-mt-50 md:-mt-50 lg:-mt-60 xl:-mt-60">
-          <NuxtImg src="/image.png" alt="Image" class="opacity-25 transform scale-100 sm:scale-100 md:scale-100" sizes="100vw sm:80vw md:70vw lg:70vw xl:70vw" />
-        </div>
+        </div>       
+      </div>
+      <div class="flex animate-on-scroll justify-center -mt-60 z-0 xs:-mt-40 sm:-mt-50 md:-mt-50 lg:-mt-60 xl:-mt-60 backdrop-opacity-35">
+        <img 
+          :src="colorMode.preference == 'dark' ? '/image.png' : '/imagelight.png'" 
+          alt="Image" 
+          class="z-0 opacity-35 dark:opacity-25 transform scale-100 sm:scale-100 md:scale-100 w-full px-2 sm:w-11/12 md:w-8/12 lg:w-8/12 xl:w-8/12">
       </div>
     </div>
 
@@ -203,19 +208,21 @@ const scrollToKnowledge = () => {
      
         <div class="animate-on-scroll grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2">
           <div class="animate-on-scroll mt-0 xs:mt-10 sm:mt-10">
+            <UIcon :name="page?.experiences[0].icon" class="text-5xl xs:mb-3 sm:mb-3 text-primary-500 dark:text-primary-400" />
             <h2 class="text-5xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-4xl xs:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {{ page.experiences[0].title }}
+              {{ page?.experiences[0].title }}
             </h2>
             <div class="mt-10">
-              <ExperienceAccordion :steps="page.experiences[0].steps" class="mx-10" />  
+              <ExperienceAccordion :steps="page?.experiences[0].steps" class="mx-10" />  
             </div>
           </div>
           <div class="animate-on-scroll mt-0 xs:mt-10 sm:mt-10">
+            <UIcon :name="page?.experiences[1].icon" class="text-5xl xs:mb-3 sm:mb-3 text-primary-500 dark:text-primary-400" />
             <h2 class="text-5xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-4xl xs:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {{ page.experiences[1].title }}
+              {{ page?.experiences[1].title }}
             </h2>
             <div class="mt-10">
-              <ExperienceAccordion :steps="page.experiences[1].steps" class="mx-10" />  
+              <ExperienceAccordion :steps="page?.experiences[1].steps" class="mx-10" />  
             </div>
           </div>
         </div>
@@ -230,8 +237,14 @@ const scrollToKnowledge = () => {
   color: #dba085;
 }
 
-.lineargradient{
+.darklineargradient{
     background-image: linear-gradient(to bottom, rgba(0,0,0,0), #121212), linear-gradient(to top, rgba(0,0,0,0), #121212), url('/public/mainbg.png');
+    background-position: center top, center bottom;
+    background-repeat: no-repeat;
+}
+
+.lineargradient{
+    background-image: linear-gradient(to bottom, rgba(0,0,0,0), #FCF7F4), linear-gradient(to top, rgba(0,0,0,0), #f8ede8), url('/public/mainbg.png');
     background-position: center top, center bottom;
     background-repeat: no-repeat;
 }
@@ -244,18 +257,12 @@ const scrollToKnowledge = () => {
   border-color: #71717A!important;
 }
 
-.animate-on-scroll {
-    /* Définit une opacité initiale de 0 pour les éléments */
-    opacity: 0;
-    /* Définit une transition d'opacité d'une seconde */
+.animate-on-scroll {    
+    opacity: 0;    
     transition: opacity 1s;
 }
-.animate-on-scroll.is-visible {
-    /* Définit une opacité de 1 pour les éléments avec la classe 'is-visible' */
+
+.animate-on-scroll.is-visible { 
     opacity: 1;
 }
-/* Ensemble, ces styles permettent aux éléments d'être rendus
-    transparents et de devenir progressivement plus opaques en 1 seconde
-    lorsque la classe 'is-visible' est ajoutée. Cela peut créer un effet
-    d'animation pour les éléments. */
 </style>

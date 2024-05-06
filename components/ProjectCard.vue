@@ -4,22 +4,22 @@
       <template #header>
         <div v-auto-animate class="-px-4 -py-5 sm:-p-6" @mouseover="showProjectDetailsActive = true" @mouseleave="mouseleave()">
           <UButton :to="urlprojectdetails" variant="ghost">
-            <NuxtImg
-              v-if="mainimage.path"
-              :src="mainimage.path"
-              sizes="100vw sm:80vw md:50vw lg:50vw xl:50vw"
+            <img
+              v-if="mainimage?.path"
+              :src="mainimage?.path"
+              class="w-full h-auto"
               :class="{ 'img': true, 'image-contained': showProjectDetailsActive }"                          
-            />
+            >
           </UButton>         
         </div>   
       </template>         
       <template #footer>
         <div class="p-5 text-left">
           <div class="ease-in-out duration-300">
-            <span class="text-lg font-bold">{{ project.title }}</span>
+            <span class="text-lg font-bold">{{ project?.title }}</span>
           </div>          
           <div class="ease-in-out duration-300"> 
-            <span v-if="!showProjectDetailsActive" class="text-base text-gray-400" @mouseover="showProjectDetailsActive = true">{{ project.type }}</span>
+            <span v-if="!showProjectDetailsActive" class="text-base text-gray-400" @mouseover="showProjectDetailsActive = true">{{ project?.type }}</span>
           </div>          
           <div class="ease-in-out duration-300"> 
             <ULink v-if="showProjectDetailsActive" :to="urlprojectdetails" class="flex" @mouseleave="mouseleave()">
@@ -49,8 +49,8 @@
   }>()
 
   const mainimage = computed(() => {
-    const data = props.project.images.find((image) => image.main === true)
-      urlprojectdetails.value = props.project.title
+    const data = props.project?.images.find((image) => image.main === true)
+      urlprojectdetails.value = props.project?.title ?? ''
       if(data){                
         return {
           name: data.name,
