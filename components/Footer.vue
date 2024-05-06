@@ -89,11 +89,6 @@ watchEffect(() => {
             <ULink to="https://m.me/leo.pellegrin.1">
               <Icon name="bxl:messenger" size="1.5em" />
             </ULink>
-          </div>
-          <div class="mt-2 mx-2">            
-            <ULink to="https://www.instagram.com/leo_pellegrin/">
-              <Icon name="mdi:instagram" size="1.5em" />
-            </ULink>
           </div>             
         </div>
       </div>
